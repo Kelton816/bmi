@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>BMI 計算器</title>
+  <style>
+    :root {
+      --primary: #087e8b;
+      --bg: #fffdf8;
+      --card-bg: #ffffff;
+      --text: #16343b;
+      --border: #cbded9;
+      --accent: #edf7f3;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", "Microsoft JhengHei", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 16px;
+    }
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      max-width: 420px;
+      width: 100%;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+    h1 {
+      margin-top: 0;
+      font-size: 1.5rem;
+      text-align: center;
+      color: var(--primary);
+    }
+    .form-group {
+      margin-bottom: 16px;
+    }
+    label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+    input[type="number"] {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 1rem;
+    }
+    button.btn-calc {
+      width: 100%;
+      padding: 12px;
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 8px;
+    }
+    button.btn-calc:hover {
+      opacity: 0.9;
+    }
+    #result {
+      margin-top: 20px;
+      padding: 16px;
+      border-radius: 8px;
+      background: var(--accent);
+      border: 1px solid var(--border);
+      display: none;
+    }
+    #result.show {
+      display: block;
+    }
+    .res-val {
+      font-size: 1.25rem;
+      font-weight: bold;
+      color: var(--primary);
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1 id="title">BMI 計算器</h1>
+    <div class="form-group">
+      <label id="lbl-height" for="height">身高（公分）</label>
+      <input type="number" id="height" placeholder="請輸入身高，例如 170" min="50" max="250" step="0.1">
+    </div>
+    <div class="form-group">
+      <label id="lbl-weight" for="weight">體重（公斤）</label>
+      <input type="number" id="weight" placeholder="請輸入體重，例如 65" min="20" max="300" step="0.1">
+    </div>
+    <button type="button" class="btn-calc" id="btn-calc">計算 BMI</button>
+    <div id="result">
+      <div id="res-text"></div>
+    </div>
+  </div>
+
+  <script>
+    function calculateBMI() {
+      const height = parseFloat(document.getElementById('height').value);
+      const weight = parseFloat(document.getElementById('weight').value);
+      const resultDiv = document.getElementById('result');
+      const resText = document.getElementById('res-text');
+
+      if (!height || !weight || height <= 0 || weight <= 0) {
+        alert('請輸入有效的身高與體重！');
+        return;
+      }
+
+      const heightM = height / 100;
+      const bmi = (weight / (heightM * heightM)).toFixed(1);
+
+      let category = '';
+      if (bmi < 18.5) {
+        category = '體重過輕';
+      } else if (bmi < 24) {
+        category = '正常範圍';
+      } else if (bmi < 27) {
+        category = '過重';
+      } else if (bmi < 30) {
+        category = '輕度肥胖';
+      } else if (bmi < 35) {
+        category = '中度肥胖';
+      } else {
+        category = '重度肥胖';
+      }
+
+      resText.innerHTML = `您的 BMI 是：<span class="res-val">${bmi}</span><br>健康分級：<b>${category}</b>`;
+      resultDiv.classList.add('show');
+    }
+
+    document.getElementById('btn-calc').addEventListener('click', calculateBMI);
+  </script>
+</body>
+</html>
