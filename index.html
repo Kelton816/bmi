@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>BMI 計算器 / BMI Calculator</title>
+  <title>BMI 計算器</title>
   <style>
     :root {
       --primary: #087e8b;
@@ -34,28 +34,11 @@
       width: 100%;
       box-shadow: 0 4px 12px rgba(0,0,0,0.05);
     }
-    .header-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 16px;
-    }
     h1 {
-      margin: 0;
+      margin-top: 0;
       font-size: 1.5rem;
+      text-align: center;
       color: var(--primary);
-    }
-    button.btn-lang {
-      padding: 6px 12px;
-      border: 1px solid var(--primary);
-      background: #fff;
-      color: var(--primary);
-      border-radius: 6px;
-      cursor: pointer;
-      font-weight: 600;
-    }
-    button.btn-lang:hover {
-      background: var(--accent);
     }
     .form-group {
       margin-bottom: 16px;
@@ -107,10 +90,7 @@
 </head>
 <body>
   <div class="card">
-    <div class="header-bar">
-      <h1 id="title">BMI 計算器</h1>
-      <button type="button" class="btn-lang" id="btn-lang">English</button>
-    </div>
+    <h1 id="title">BMI 計算器</h1>
     <div class="form-group">
       <label id="lbl-height" for="height">身高（公分）</label>
       <input type="number" id="height" placeholder="請輸入身高，例如 170" min="50" max="250" step="0.1">
@@ -126,101 +106,39 @@
   </div>
 
   <script>
-    const i18n = {
-      zh: {
-        title: "BMI 計算器",
-        langBtn: "English",
-        lblHeight: "身高（公分）",
-        placeholderHeight: "請輸入身高，例如 170",
-        lblWeight: "體重（公斤）",
-        placeholderWeight: "請輸入體重，例如 65",
-        btnCalc: "計算 BMI",
-        alertEmpty: "請輸入有效的身高與體重！",
-        resPrefix: "您的 BMI 是：",
-        resCategory: "健康分級：",
-        underweight: "體重過輕",
-        normal: "正常範圍",
-        overweight: "過重",
-        mildObese: "輕度肥胖",
-        moderateObese: "中度肥胖",
-        severeObese: "重度肥胖"
-      },
-      en: {
-        title: "BMI Calculator",
-        langBtn: "中文",
-        lblHeight: "Height (cm)",
-        placeholderHeight: "e.g. 170",
-        lblWeight: "Weight (kg)",
-        placeholderWeight: "e.g. 65",
-        btnCalc: "Calculate BMI",
-        alertEmpty: "Please enter valid height and weight!",
-        resPrefix: "Your BMI is: ",
-        resCategory: "Category: ",
-        underweight: "Underweight",
-        normal: "Normal weight",
-        overweight: "Overweight",
-        mildObese: "Mild obesity",
-        moderateObese: "Moderate obesity",
-        severeObese: "Severe obesity"
-      }
-    };
-
-    let currentLang = 'zh';
-    let lastBmi = null;
-
-    function toggleLang() {
-      currentLang = currentLang === 'zh' ? 'en' : 'zh';
-      const t = i18n[currentLang];
-      document.getElementById('title').textContent = t.title;
-      document.getElementById('btn-lang').textContent = t.langBtn;
-      document.getElementById('lbl-height').textContent = t.lblHeight;
-      document.getElementById('height').placeholder = t.placeholderHeight;
-      document.getElementById('lbl-weight').textContent = t.lblWeight;
-      document.getElementById('weight').placeholder = t.placeholderWeight;
-      document.getElementById('btn-calc').textContent = t.btnCalc;
-
-      if (lastBmi !== null) {
-        renderResult(lastBmi);
-      }
-    }
-
-    function renderResult(bmi) {
-      const t = i18n[currentLang];
-      let category = '';
-      if (bmi < 18.5) {
-        category = t.underweight;
-      } else if (bmi < 24) {
-        category = t.normal;
-      } else if (bmi < 27) {
-        category = t.overweight;
-      } else if (bmi < 30) {
-        category = t.mildObese;
-      } else if (bmi < 35) {
-        category = t.moderateObese;
-      } else {
-        category = t.severeObese;
-      }
-
-      document.getElementById('res-text').innerHTML = `${t.resPrefix}<span class="res-val">${bmi}</span><br>${t.resCategory}<b>${category}</b>`;
-      document.getElementById('result').classList.add('show');
-    }
-
     function calculateBMI() {
       const height = parseFloat(document.getElementById('height').value);
       const weight = parseFloat(document.getElementById('weight').value);
-      const t = i18n[currentLang];
+      const resultDiv = document.getElementById('result');
+      const resText = document.getElementById('res-text');
 
       if (!height || !weight || height <= 0 || weight <= 0) {
-        alert(t.alertEmpty);
+        alert('請輸入有效的身高與體重！');
         return;
       }
 
       const heightM = height / 100;
-      lastBmi = (weight / (heightM * heightM)).toFixed(1);
-      renderResult(lastBmi);
+      const bmi = (weight / (heightM * heightM)).toFixed(1);
+
+      let category = '';
+      if (bmi < 18.5) {
+        category = '體重過輕';
+      } else if (bmi < 24) {
+        category = '正常範圍';
+      } else if (bmi < 27) {
+        category = '過重';
+      } else if (bmi < 30) {
+        category = '輕度肥胖';
+      } else if (bmi < 35) {
+        category = '中度肥胖';
+      } else {
+        category = '重度肥胖';
+      }
+
+      resText.innerHTML = `您的 BMI 是：<span class="res-val">${bmi}</span><br>健康分級：<b>${category}</b>`;
+      resultDiv.classList.add('show');
     }
 
-    document.getElementById('btn-lang').addEventListener('click', toggleLang);
     document.getElementById('btn-calc').addEventListener('click', calculateBMI);
   </script>
 </body>
